@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SlimPDF – Smart PDF Compressor</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- PDF.js for thumbnail AFTER compression -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+</head>
+<body>
+
+<!-- Top Navigation / Branding -->
+<header class="site-header">
+    <div class="nav-inner">
+        <div class="brand">
+            <div class="logo-mark">S</div>
+            <div class="logo-text">
+                <span class="logo-title">SlimPDF</span>
+                <span class="logo-subtitle">Smart PDF Tools</span>
+            </div>
+        </div>
+
+        <!-- In future you can add more tool links here -->
+        <nav class="nav-links">
+            <a href="#tool">Compress</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero" id="top">
+    <div class="hero-inner">
+        <div class="hero-text">
+            <h1>Compress your PDFs in seconds.</h1>
+            <p>
+                Lightweight, automatic PDF compression that keeps your documents readable
+                while cutting file size drastically. Perfect for job portals, college forms,
+                government sites and email attachments.
+            </p>
+            <a href="#tool" class="hero-cta">Start Compressing</a>
+        </div>
+        <div class="hero-badge">
+            <p>100% Free • No Signup</p>
+            <p>Works on Mobile & Desktop</p>
+        </div>
+    </div>
+</section>
+
+<!-- Tool Section -->
+<main class="tool-section" id="tool">
+    <div class="tool-card">
+
+        <h2 class="tool-title">PDF Compressor</h2>
+        <p class="tool-subtitle">Upload your PDF, choose a target size, and download a compressed version.</p>
+
+        <!-- Upload Area -->
+        <div class="upload-area" id="dropArea">
+            <label class="upload-label">
+                <input type="file" id="pdfInput" accept="application/pdf" />
+                <span id="uploadText" class="upload-text">Click or Drag & Drop PDF</span>
+            </label>
+        </div>
+
+        <!-- File info line -->
+        <p id="fileInfo" class="file-info hidden"></p>
+
+        <!-- Target size input -->
+        <div class="input-group">
+            <label for="targetKb">Target Size (KB)</label>
+            <input type="number" id="targetKb" value="100" min="20" max="5000" />
+        </div>
+
+        <!-- Compress button -->
+        <button id="compressBtn" class="action-btn">Compress PDF</button>
+
+        <!-- Loading and progress -->
+        <div id="loading" class="loading hidden">
+            <div class="loader"></div>
+            <p>Compressing… Please wait</p>
+        </div>
+
+        <div id="progressBarContainer" class="progress hidden">
+            <div id="progressBar"></div>
+        </div>
+
+        <!-- Preview AFTER compression -->
+        <canvas id="pdfPreview" class="preview hidden"></canvas>
+
+        <!-- Result Summary -->
+        <div id="result" class="result hidden">
+            <h3>Compression Summary</h3>
+
+            <div class="summary-row">
+                <span>Original Size</span>
+                <span id="origSize"></span>
+            </div>
+            <div class="summary-row">
+                <span>Target Size</span>
+                <span id="targetSize"></span>
+            </div>
+            <div class="summary-row">
+                <span>Compressed Size</span>
+                <span id="compressedSize"></span>
+            </div>
+
+            <a id="downloadLink" class="download-btn">Download Compressed PDF</a>
+        </div>
+    </div>
+</main>
+
+<!-- Features Section -->
+<section class="features" id="features">
+    <div class="features-inner">
+        <h2>Why SlimPDF?</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <h3>Smart Compression</h3>
+                <p>
+                    Automatically balances quality and size based on your target. No need to choose modes –
+                    the engine decides for you.
+                </p>
+            </div>
+            <div class="feature-item">
+                <h3>Portal Friendly</h3>
+                <p>
+                    Optimized for job portals, college sites, and government uploads where strict size limits
+                    are common.
+                </p>
+            </div>
+            <div class="feature-item">
+                <h3>Privacy First</h3>
+                <p>
+                    Files are processed on the server side of your instance. You can self-host and keep full control.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About / Footer Section -->
+<section class="about" id="about">
+    <div class="about-inner">
+        <h2>Built for Developers & Students</h2>
+        <p>
+            SlimPDF is a simple, focused tool created to solve a real day-to-day problem:
+            PDFs that are “too large” for online portals. It’s lightweight, fast, and designed
+            with a clean experience in mind.
+        </p>
+        <p class="about-note">
+            In the future, this page can host more tools like PDF merge, split, image compress, and more.
+        </p>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <p>© <span id="yearSpan"></span> SlimPDF. All rights reserved.</p>
+</footer>
+
+<script>
+    // Set current year in footer
+    document.getElementById("yearSpan").innerText = new Date().getFullYear();
+</script>
+<script src="app.js"></script>
+</body>
+</html>

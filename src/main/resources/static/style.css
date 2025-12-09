@@ -1,0 +1,409 @@
+/* ============ Global ============ */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #242a68, #6f8cff);
+    color: #fff;
+}
+
+/* ============ Header / Navbar ============ */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(11, 16, 54, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00e676, #29b6f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #042a3b;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-title {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.logo-subtitle {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+.nav-links a {
+    color: #e5e7ff;
+    text-decoration: none;
+    margin-left: 16px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+}
+
+/* ============ Hero ============ */
+.hero {
+    padding: 40px 16px 20px;
+}
+
+.hero-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-text {
+    max-width: 540px;
+}
+
+.hero-text h1 {
+    font-size: 2.1rem;
+    margin: 0 0 10px;
+}
+
+.hero-text p {
+    margin: 0 0 16px;
+    opacity: 0.95;
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+.hero-cta {
+    display: inline-block;
+    padding: 10px 18px;
+    background: #00e676;
+    color: #003a1b;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.hero-cta:hover {
+    background: #00c96b;
+}
+
+.hero-badge {
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(9, 18, 60, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 13px;
+}
+
+/* ============ Tool Section ============ */
+.tool-section {
+    display: flex;
+    justify-content: center;
+    padding: 10px 16px 30px;
+}
+
+.tool-card {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.28);
+    padding: 24px 20px 26px;
+}
+
+.tool-title {
+    margin: 0 0 6px;
+    font-size: 1.4rem;
+}
+
+.tool-subtitle {
+    margin: 0 0 18px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Upload Area */
+.upload-area {
+    text-align: center;
+    padding: 24px;
+    border-radius: 18px;
+    border: 2px dashed rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.14);
+    cursor: pointer;
+    margin-bottom: 14px;
+    transition: 0.25s;
+    position: relative;
+}
+
+.upload-area.highlight {
+    border-color: #00e676;
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.upload-label {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.upload-label input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.upload-text {
+    font-size: 0.98rem;
+    color: #f5f5ff;
+}
+
+/* File info */
+.file-info {
+    font-size: 0.85rem;
+    margin: 0 0 10px;
+    opacity: 0.9;
+}
+
+/* Input Group */
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+/* Action Button */
+.action-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: #00e676;
+    color: #003a1b;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.action-btn:hover {
+    background: #00c96b;
+}
+
+/* Loading */
+.loading {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.loader {
+    border: 4px solid rgba(255,255,255,0.3);
+    border-top-color: #00e676;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 8px auto;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Progress */
+.progress {
+    width: 100%;
+    background: rgba(255,255,255,0.25);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+    height: 10px;
+}
+
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background: #00e676;
+    transition: width 0.3s;
+}
+
+/* Preview Canvas */
+.preview {
+    width: 100%;
+    margin-top: 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+}
+
+/* Result Summary */
+.result {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(12px);
+}
+
+.result h3 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+.download-btn {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #29b6f6;
+    color: #00324b;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.download-btn:hover {
+    background: #17a0e2;
+}
+
+/* ============ Features Section ============ */
+.features {
+    padding: 30px 16px 20px;
+}
+
+.features-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+.features-inner h2 {
+    margin: 0 0 16px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.feature-item {
+    background: rgba(0,0,0,0.22);
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 0.9rem;
+}
+
+/* ============ About Section ============ */
+.about {
+    padding: 20px 16px 30px;
+}
+
+.about-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+}
+
+.about-inner h2 {
+    margin-top: 0;
+}
+
+.about-note {
+    opacity: 0.9;
+    margin-top: 8px;
+}
+
+/* ============ Footer ============ */
+.site-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 12px 10px 20px;
+    opacity: 0.85;
+}
+
+/* ============ Utility ============ */
+.hidden {
+    display: none;
+}
+
+/* ============ Mobile Tweaks ============ */
+@media (max-width: 640px) {
+    .hero-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hero-text h1 {
+        font-size: 1.6rem;
+    }
+
+    .tool-card {
+        padding: 20px 16px 22px;
+    }
+
+    .nav-links {
+        display: none; /* Keeping nav simple for now on mobile */
+    }
+}
