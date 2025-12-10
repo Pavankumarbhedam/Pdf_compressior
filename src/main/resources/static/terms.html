@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service – SlimPDF</title>
+
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX');
+  </script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="mobileMenu" class="mobile-menu">
+  <div class="menu-header">SlimPDF</div>
+  <nav class="menu-links">
+    <a href="index.html#tool">Compress PDF</a>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="menu-footer">© <span id="y1"></span> SlimPDF</div>
+</div>
+
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="brand" onclick="location.href='index.html'">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">
+        <span class="logo-title">SlimPDF</span>
+        <span class="logo-subtitle">Smart PDF Tools</span>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html#tool">Compress</a>
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div id="hamburger" class="hamburger">☰</div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <a href="index.html" class="back-link"><span class="arrow">←</span> Back to SlimPDF</a>
+    <h1 class="page-hero-title">Terms of Service</h1>
+    <p class="page-hero-subtitle">Please read these terms carefully before using SlimPDF.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="page-inner">
+    <div class="page-card">
+      <p><strong>Last updated:</strong> January 2025</p>
+
+      <h2>1. Acceptance of Terms</h2>
+      <p>
+        By using SlimPDF, you agree to these Terms of Service. If you do not
+        agree, please do not use the site.
+      </p>
+
+      <h2>2. Use of the Service</h2>
+      <p>
+        You may use SlimPDF for personal, academic or professional purposes,
+        as long as you comply with applicable laws.
+      </p>
+
+      <h2>3. Prohibited Use</h2>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Upload illegal, harmful or copyrighted content you do not own</li>
+        <li>Attempt to attack, overload or abuse the service</li>
+        <li>Reverse engineer or copy the backend logic</li>
+      </ul>
+
+      <h2>4. No Warranty</h2>
+      <p>
+        SlimPDF is provided “as is” without any warranties, express or implied.
+        We do not guarantee uptime, accuracy, or that the service will meet your needs.
+      </p>
+
+      <h2>5. Limitation of Liability</h2>
+      <p>
+        SlimPDF shall not be liable for any data loss, corrupted files,
+        inability to upload to external portals, or any indirect or
+        consequential damages.
+      </p>
+
+      <h2>6. Changes</h2>
+      <p>
+        We may update these terms from time to time. Continued use of the
+        service means you accept the updated terms.
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>
+    <a href="privacy.html">Privacy</a> ·
+    <a href="terms.html">Terms</a> ·
+    <a href="about.html">About</a> ·
+    <a href="contact.html">Contact</a>
+  </p>
+  <p>© <span id="y2"></span> SlimPDF</p>
+</footer>
+
+<script>
+  const y = new Date().getFullYear();
+  document.getElementById("y1").innerText = y;
+  document.getElementById("y2").innerText = y;
+</script>
+<script src="menu.js"></script>
+</body>
+</html>
