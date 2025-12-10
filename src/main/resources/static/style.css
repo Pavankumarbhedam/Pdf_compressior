@@ -419,6 +419,21 @@ main, .hero, .tool-section {
     background: rgba(15, 23, 42, 0.95);
     border-top: 1px solid rgba(148, 163, 184, 0.4);
 }
+.progress {
+    width: 100%;
+    background: rgba(255,255,255,0.25);
+    border-radius: 999px;
+    overflow: hidden;
+    height: 10px;
+    margin-top: 10px;
+}
+
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background: #00e676;
+    transition: width 0.15s linear;
+}
 
 .site-footer a {
     color: #c7d2fe;

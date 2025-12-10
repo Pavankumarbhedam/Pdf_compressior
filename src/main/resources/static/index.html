@@ -10,11 +10,12 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="SlimPDF">
   <meta name="language" content="English">
+  <meta name="robots" content="index, follow">
 
   <!-- Open Graph for social sharing -->
   <meta property="og:title" content="SlimPDF – Free Online PDF Compressor">
   <meta property="og:description" content="Reduce PDF size instantly without losing quality. 100% free, fast, secure. No signup required.">
-  <meta property="og:type" content="website">
+  <meta property="og:typAe" content="website">
   <meta property="og:url" content="https://pdf-compressior.onrender.com/">
   <meta property="og:image" content="https://pdf-compressior.onrender.com/preview.png">
 
@@ -37,7 +38,6 @@
 
   <link rel="stylesheet" href="style.css" />
   <meta name="google-site-verification" content="0h8n_dJSCFX9VUoJo3yizrgmFavL6q1wyaiOzWNL8rg" />
-
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -139,11 +139,15 @@
         </div>
 
         <button id="compressBtn" class="action-btn">Compress PDF</button>
-
         <div id="loading" class="loading hidden">
           <div class="loader"></div>
-          <p>Compressing… please wait</p>
+          <p id="loadingText">Preparing…</p>
+
+          <div id="progressBarContainer" class="progress">
+            <div id="progressBar"></div>
+          </div>
         </div>
+
 
         <canvas id="pdfPreview" class="preview hidden"></canvas>
 

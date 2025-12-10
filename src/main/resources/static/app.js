@@ -2,35 +2,66 @@ function formatKb(bytes) {
     return (bytes / 1024).toFixed(2) + " KB";
 }
 
-const pdfInput   = document.getElementById("pdfInput");
-const dropArea   = document.getElementById("dropArea");
-const uploadText = document.getElementById("uploadText");
-const fileInfo   = document.getElementById("fileInfo");
-const targetInput= document.getElementById("targetKb");
-const compressBtn= document.getElementById("compressBtn");
-const loadingEl  = document.getElementById("loading");
-const resultEl   = document.getElementById("result");
-const origSizeEl = document.getElementById("origSize");
-const targetSizeEl = document.getElementById("targetSize");
-const compressedSizeEl = document.getElementById("compressedSize");
-const downloadLink = document.getElementById("downloadLink");
+const pdfInput            = document.getElementById("pdfInput");
+const dropArea            = document.getElementById("dropArea");
+const uploadText          = document.getElementById("uploadText");
+const fileInfo            = document.getElementById("fileInfo");
+const targetInput         = document.getElementById("targetKb");
+const compressBtn         = document.getElementById("compressBtn");
+const loadingEl           = document.getElementById("loading");
+const loadingText         = document.getElementById("loadingText");
+const progressBar         = document.getElementById("progressBar");
+const resultEl            = document.getElementById("result");
+const origSizeEl          = document.getElementById("origSize");
+const targetSizeEl        = document.getElementById("targetSize");
+const compressedSizeEl    = document.getElementById("compressedSize");
+const downloadLink        = document.getElementById("downloadLink");
 
 let selectedFile = null;
+let progressInterval = null;
 
-// File input change
+const MAX_BYTES = 8 * 1024 * 1024; // 8 MB limit
+
+// ============================================================
+// File Selection Handler
+// ============================================================
+function selectFile(file) {
+    if (file.type !== "application/pdf") {
+        alert("Please upload a valid PDF file.");
+        return;
+    }
+
+    // FRONTEND 8MB LIMIT BLOCKER
+    if (file.size > MAX_BYTES) {
+        alert("Max file size is 8 MB. Please upload a smaller PDF.");
+        pdfInput.value = "";
+        selectedFile = null;
+        uploadText.textContent = "Click or Drag & Drop PDF";
+        fileInfo.classList.add("hidden");
+        return;
+    }
+
+    // SUCCESS — SET FILE
+    selectedFile = file;
+    uploadText.textContent = file.name;
+    fileInfo.textContent = `Selected: ${file.name} (${formatKb(file.size)})`;
+    fileInfo.classList.remove("hidden");
+}
+
+// ============================================================
+// File Input Change
+// ============================================================
 pdfInput.addEventListener("change", () => {
     if (!pdfInput.files || !pdfInput.files[0]) return;
-    selectedFile = pdfInput.files[0];
-    uploadText.textContent = selectedFile.name;
-    fileInfo.textContent = `Selected: ${selectedFile.name} (${formatKb(selectedFile.size)})`;
-    fileInfo.classList.remove("hidden");
+    selectFile(pdfInput.files[0]);
 });
 
-// Drag & drop behavior
+// ============================================================
+// Drag & Drop Events
+// ============================================================
 ["dragenter", "dragover"].forEach(evt => {
     dropArea.addEventListener(evt, (e) => {
         e.preventDefault();
-        e.stopPropagation();
         dropArea.classList.add("dragover");
     });
 });
@@ -38,29 +69,60 @@ pdfInput.addEventListener("change", () => {
 ["dragleave", "drop"].forEach(evt => {
     dropArea.addEventListener(evt, (e) => {
         e.preventDefault();
-        e.stopPropagation();
         dropArea.classList.remove("dragover");
     });
 });
 
+// Handle dropped file
 dropArea.addEventListener("drop", (e) => {
     const files = e.dataTransfer.files;
     if (!files || !files[0]) return;
-    if (files[0].type !== "application/pdf") {
-        alert("Please drop a PDF file.");
+
+    const file = files[0];
+
+    // PREVENT LARGE FILES BEFORE BACKEND
+    if (file.size > MAX_BYTES) {
+        alert("Max file size is 8 MB. Please upload a smaller PDF.");
         return;
     }
-    selectedFile = files[0];
-    pdfInput.files = files;
-    uploadText.textContent = selectedFile.name;
-    fileInfo.textContent = `Selected: ${selectedFile.name} (${formatKb(selectedFile.size)})`;
-    fileInfo.classList.remove("hidden");
+
+    selectFile(file);
 });
 
-// Compress button
+// ============================================================
+// Progress Bar Animation (Fake Progress)
+// ============================================================
+function startProgressAnimation() {
+    progressBar.style.width = "0%";
+    loadingText.textContent = "Compressing…";
+
+    let progress = 0;
+    progressInterval = setInterval(() => {
+        progress += Math.random() * 8; // smooth animated increments
+        if (progress > 90) progress = 90;
+        progressBar.style.width = progress + "%";
+    }, 120);
+}
+
+function finishProgressAnimation() {
+    clearInterval(progressInterval);
+    progressBar.style.width = "100%";
+    loadingText.textContent = "Finalizing…";
+}
+
+// ============================================================
+// Compress Button Handler
+// ============================================================
 compressBtn.addEventListener("click", async () => {
+
     if (!selectedFile) {
         alert("Please select a PDF file first.");
+        return;
+    }
+
+    // FINAL CHECK BEFORE UPLOAD
+    if (selectedFile.size > MAX_BYTES) {
+        alert("Max file size is 8 MB. Please upload a smaller PDF.");
         return;
     }
 
@@ -70,10 +132,12 @@ compressBtn.addEventListener("click", async () => {
         return;
     }
 
-    // UI state
+    // Set UI loading state
     compressBtn.disabled = true;
     loadingEl.classList.remove("hidden");
     resultEl.classList.add("hidden");
+
+    startProgressAnimation();
 
     try {
         const formData = new FormData();
@@ -84,10 +148,23 @@ compressBtn.addEventListener("click", async () => {
             body: formData
         });
 
+        // BACKEND ERROR HANDLING
         if (!response.ok) {
-            alert("Error compressing PDF. Please try a smaller file or higher target size.");
+            finishProgressAnimation();
+
+            if (response.status === 413) {
+                alert("File too large. Max allowed is 8 MB.");
+            } else if (response.status === 500) {
+                alert("Server error during compression. Try increasing target KB.");
+            } else {
+                alert("Unexpected server error.");
+            }
+
             return;
         }
+
+        // SUCCESS
+        finishProgressAnimation();
 
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
@@ -98,16 +175,20 @@ compressBtn.addEventListener("click", async () => {
         downloadLink.href = url;
         downloadLink.download = finalName;
 
+        // Show results
         origSizeEl.textContent = formatKb(selectedFile.size);
-        targetSizeEl.textContent = targetKb + " KB";
+        targetSizeEl.textContent = `${targetKb} KB`;
         compressedSizeEl.textContent = formatKb(blob.size);
 
-        resultEl.classList.remove("hidden");
+        setTimeout(() => {
+            loadingEl.classList.add("hidden");
+            resultEl.classList.remove("hidden");
+        }, 600);
+
     } catch (err) {
-        console.error(err);
-        alert("Unexpected error. Please try again later.");
-    } finally {
-        loadingEl.classList.add("hidden");
-        compressBtn.disabled = false;
+        console.error("Error:", err);
+        alert("Unexpected error occurred. Please try again.");
     }
+
+    compressBtn.disabled = false;
 });
