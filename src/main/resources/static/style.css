@@ -412,13 +412,12 @@ main, .hero, .tool-section {
 /* =============== Footer =============== */
 
 .site-footer {
+    margin-top: auto;
     text-align: center;
     padding: 16px 10px 20px;
     font-size: 13px;
     background: rgba(15, 23, 42, 0.95);
     border-top: 1px solid rgba(148, 163, 184, 0.4);
-        margin-top: auto;
-
 }
 
 .site-footer a {

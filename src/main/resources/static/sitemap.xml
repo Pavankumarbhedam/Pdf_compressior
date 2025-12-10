@@ -13,17 +13,17 @@
 
     <url>
         <loc>https://pdf-compressior.onrender.com/privacy.html</loc>
-        <priority>0.5</priority>
+        <priority>0.6</priority>
     </url>
 
     <url>
         <loc>https://pdf-compressior.onrender.com/terms.html</loc>
-        <priority>0.5</priority>
+        <priority>0.6</priority>
     </url>
 
     <url>
         <loc>https://pdf-compressior.onrender.com/contact.html</loc>
-        <priority>0.5</priority>
+        <priority>0.6</priority>
     </url>
 
 </urlset>
