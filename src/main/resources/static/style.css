@@ -540,3 +540,35 @@ main, .hero, .tool-section {
         font-size: 2.1rem;
     }
 }
+/* ================= MAIN PAGE FIXES ONLY ================= */
+
+/* Make hero taller & balanced */
+.hero-main {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
+
+/* Reduce footer height */
+.compact-footer {
+    padding: 10px 8px 12px;
+    font-size: 12px;
+}
+
+/* Footer links tighter */
+.compact-footer p {
+    margin: 4px 0;
+}
+
+/* Ensure footer stays at bottom */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-main {
+    flex-grow: 1;
+}

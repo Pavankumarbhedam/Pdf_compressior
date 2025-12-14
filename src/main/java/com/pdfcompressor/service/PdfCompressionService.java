@@ -11,113 +11,122 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-
 @Service
 public class PdfCompressionService {
 
-    // Hard limit for free Render tier (512 MB)
     private static final long MAX_UPLOAD_BYTES = 8L * 1024 * 1024; // 8 MB
 
-    /**
-     * Compress a PDF file to roughly match the target size, with a RAM-safe pipeline.
-     */
     public byte[] compressPdf(MultipartFile file, int targetKb) throws Exception {
 
         if (file.getSize() > MAX_UPLOAD_BYTES) {
-            throw new IllegalArgumentException("File too large. Max allowed is 8 MB on this server.");
+            throw new IllegalArgumentException("Max allowed file size is 8 MB.");
         }
 
         byte[] inputBytes = file.getBytes();
         long originalBytes = inputBytes.length;
-        long targetBytes = Math.max(targetKb, 20) * 1024L; // guard minimum 20 KB
+        long targetBytes = Math.max(targetKb, 20) * 1024L;
 
-        // If already small enough -> just return as-is
         if (originalBytes <= targetBytes) {
             return inputBytes;
         }
 
-        // Decide compression strength from ratio
-        double ratio = (double) targetBytes / (double) originalBytes;
+        try (PDDocument src = PDDocument.load(
+                new ByteArrayInputStream(inputBytes),
+                MemoryUsageSetting.setupTempFileOnly())) {
 
-        int baseDpi;
-        float baseQuality;
+            boolean textPdf = isTextPdf(src);
+            byte[] output;
 
-        if (ratio >= 0.75) {
-            // light compression
-            baseDpi = 120;
-            baseQuality = 0.80f;
-        } else if (ratio >= 0.50) {
-            baseDpi = 100;
-            baseQuality = 0.70f;
-        } else if (ratio >= 0.30) {
-            baseDpi = 90;
-            baseQuality = 0.60f;
-        } else {
-            // very strong compression
-            baseDpi = 72;
-            baseQuality = 0.50f;
+            if (textPdf) {
+                output = compressTextPdf(src);
+            } else {
+                output = compressScannedPdf(src);
+            }
+
+            // Never return larger file
+            if (output.length >= originalBytes) {
+                return inputBytes;
+            }
+            return output;
         }
+    }
 
-        // Use temp files instead of heap only -> huge memory win
-        try (ByteArrayInputStream in = new ByteArrayInputStream(inputBytes);
-             PDDocument src = PDDocument.load(in, MemoryUsageSetting.setupTempFileOnly());
-             PDDocument out = new PDDocument()) {
+    /* ================= TEXT PDF COMPRESSION ================= */
 
-            PDFRenderer renderer = new PDFRenderer(src);
+    private byte[] compressTextPdf(PDDocument doc) throws Exception {
 
-            int pageCount = src.getNumberOfPages();
-            System.out.println("Pages: " + pageCount + ", ratio=" + ratio +
-                    " baseDpi=" + baseDpi + ", baseQ=" + baseQuality);
+        doc.setAllSecurityToBeRemoved(true);
 
-            for (int i = 0; i < pageCount; i++) {
-                boolean scanned = PdfPageInspector.isImageHeavy(src, i);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        doc.save(baos); // PDFBox 2.x compatible
+        return baos.toByteArray();
+    }
 
-                int dpi = scanned ? baseDpi - 10 : baseDpi;
-                if (dpi < 60) dpi = 60;
+    /* ================= SCANNED PDF COMPRESSION ================= */
 
-                float quality = scanned ? Math.min(baseQuality + 0.05f, 0.85f) : baseQuality;
+    private byte[] compressScannedPdf(PDDocument src) throws Exception {
 
-                // Render single page
-                BufferedImage pageImage = renderer.renderImageWithDPI(i, dpi);
+        PDFRenderer renderer = new PDFRenderer(src);
 
-                // Compress to JPEG
-                byte[] jpegBytes = JpegEncoder.toJpeg(pageImage, quality);
+        try (PDDocument out = new PDDocument()) {
 
-                // Read compressed JPEG back
-                BufferedImage finalImg;
-                try (ByteArrayInputStream imgIn = new ByteArrayInputStream(jpegBytes)) {
-                    finalImg = ImageIO.read(imgIn);
+            int dpi = 90;
+            float quality = 0.65f;
+
+            for (int i = 0; i < src.getNumberOfPages(); i++) {
+
+                BufferedImage image = renderer.renderImageWithDPI(i, dpi);
+
+                byte[] jpegBytes = JpegEncoder.toJpeg(image, quality);
+                BufferedImage finalImg = ImageIO.read(new ByteArrayInputStream(jpegBytes));
+
+                PDPage page = new PDPage(
+                        new PDRectangle(finalImg.getWidth(), finalImg.getHeight()));
+                out.addPage(page);
+
+                PDImageXObject imgObj = JPEGFactory.createFromImage(out, finalImg);
+
+                try (PDPageContentStream cs =
+                             new PDPageContentStream(out, page)) {
+
+                    cs.drawImage(
+                            imgObj,
+                            0,
+                            0,
+                            finalImg.getWidth(),
+                            finalImg.getHeight()
+                    );
                 }
 
-                // Create new page sized to image
-                PDPage newPage = new PDPage(new PDRectangle(finalImg.getWidth(), finalImg.getHeight()));
-                out.addPage(newPage);
-
-                // Draw image on page
-                PDImageXObject pdImage = JPEGFactory.createFromImage(out, finalImg);
-                try (var cs = new org.apache.pdfbox.pdmodel.PDPageContentStream(out, newPage)) {
-                    cs.drawImage(pdImage, 0, 0,
-                            finalImg.getWidth(), finalImg.getHeight());
-                }
-
-                // Help GC
-                pageImage.flush();
+                image.flush();
                 finalImg.flush();
                 System.gc();
             }
 
-            // Save result
-            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                out.save(baos);
-                long outBytes = baos.size();
-                System.out.println("Compressed size = " + (outBytes / 1024.0) + " KB");
-                return baos.toByteArray();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            out.save(baos);
+            return baos.toByteArray();
+        }
+    }
+
+    /* ================= PDF TYPE DETECTION ================= */
+
+    private boolean isTextPdf(PDDocument doc) {
+        try {
+            for (int i = 0; i < doc.getNumberOfPages(); i++) {
+                if (PdfPageInspector.isImageHeavy(doc, i)) {
+                    return false;
+                }
             }
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

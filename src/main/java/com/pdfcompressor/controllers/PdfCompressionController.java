@@ -24,7 +24,7 @@ public class PdfCompressionController {
     )
     public ResponseEntity<?> compress(
             @RequestParam("file") MultipartFile file,
-            @RequestParam(defaultValue = "100") int targetKb
+            @RequestParam(defaultValue = "500") int targetKb
     ) {
         try {
             if (file.isEmpty()) {
